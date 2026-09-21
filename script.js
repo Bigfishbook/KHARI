@@ -74,7 +74,7 @@ const MENU = [
   { id: "researchers", name: "탐사원 프로필", desc: "주요 탐사원들의 프로필을 열람합니다.", href: "#researchers", icon: "idcard" },
   { id: "test", name: "탐사원 적성 평가", desc: "입사를 희망하시는 분은 먼저 평가를 진행해 주세요.", href: "#test", icon: "checklist" },
   { id: "playlist", name: "오디오 아카이브실", desc: "탐사 시 청취를 권장합니다.", href: "#playlist", icon: "headphones" },
-  { id: "preview", name: "(대외비) 지침서", desc: "생존을 위해 지침서 정독을 권장합니다.", href: "#preview", icon: "document" },
+  { id: "preview", name: "(일부 공개) 지침서", desc: "생존을 위해 지침서 정독을 권장합니다.", href: "#preview", icon: "document" },
 ];
 
 /* ---------------------------------------------------------
@@ -220,7 +220,7 @@ const PLAYLISTS = [
   {
     time: "탐사 전 필수 청취",
     name: "오디오 아카이브",
-    desc: "탐사원들이 탐사 시 유용하게 사용한 오디오 플레이리스트입니다",
+    desc: "(이어폰 착용 권장) 탐사원들이 탐사 시 유용하게 사용한 오디오 플레이리스트입니다",
     links: [
       { platform: "YouTube Music", url: "https://youtube.com/playlist?list=PLP4PFc0hKG-4&si=g7LLlKf3wD5hP83O" },
 
@@ -240,6 +240,9 @@ const GUIDE_IMAGES = [
   { src: "guide.jpg" },
   { src: "guide-2.jpg" },
   { src: "guide-3.jpg" },
+  { src: "guide-4.jpg" },
+  { src: "guide-5.jpg" },
+  { src: "guide-6.jpg" },
 ];
 
 /* ---------------------------------------------------------
