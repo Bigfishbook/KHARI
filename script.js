@@ -656,7 +656,7 @@ function initApply() {
   if (!opener || !dialog) return;
   opener.addEventListener("click", () => {
     if (typeof dialog.showModal === "function") dialog.showModal();
-    else alert("[안내] 현재는 채용 공고 기간이 아닙니다.");
+    else alert("[안내] 현재는 채용 기간이 아닙니다.");
   });
   $("#apply-close").addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (e) => {
