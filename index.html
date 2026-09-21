@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -79,6 +79,9 @@
         </div>
         <div class="org-chart" id="org-chart">
           <!-- script.js에서 생성 -->
+        </div>
+        <div class="org-actions">
+          <button class="btn btn-red" type="button" id="apply-open">입사 지원하기</button>
         </div>
       </div>
     </section>
@@ -210,8 +213,22 @@
     </div>
   </dialog>
 
+  <!-- 입사 지원 안내 -->
+  <dialog class="warn-dialog" id="apply-dialog" aria-labelledby="apply-title" aria-describedby="apply-text">
+    <div class="warn-box">
+      <p class="warn-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.3v.6" stroke="currentColor" stroke-width="2"/></svg>
+        <span id="apply-title">안내</span>
+      </p>
+      <p class="warn-text" id="apply-text">현재는 채용 공고 기간이 아닙니다.</p>
+      <div class="warn-actions">
+        <button class="warn-btn warn-confirm" type="button" id="apply-close">확인</button>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=12"></script>
+  <script src="script.js?v=13"></script>
 </body>
 </html>

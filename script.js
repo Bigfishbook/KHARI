@@ -649,6 +649,21 @@ function initGuide() {
   loadGuideList().then(() => renderGuide());
 }
 
+/* ---------- 입사 지원 안내 ---------- */
+function initApply() {
+  const opener = $("#apply-open");
+  const dialog = $("#apply-dialog");
+  if (!opener || !dialog) return;
+  opener.addEventListener("click", () => {
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else alert("[안내] 현재는 채용 공고 기간이 아닙니다.");
+  });
+  $("#apply-close").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+}
+
 /* ---------- 지침서 열람 전 경고문 ---------- */
 function initWarning() {
   const opener = $("#guide-open");
@@ -689,4 +704,5 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPlaylists();
   initGuide();
   initWarning();
+  initApply();
 });

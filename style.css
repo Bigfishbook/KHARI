@@ -202,6 +202,8 @@ p { margin: 0; }
 .org-teams li { padding: 14px 20px; }
 .org-teams li + li { border-top: 1px dashed var(--line-strong); }
 .org-team-name { display: block; color: var(--red); font-size: 15px; font-weight: 700; }
+.org-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+
 .org-team-desc { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
 /* ---------- 파일 보관함 (메인 아이콘) ---------- */
