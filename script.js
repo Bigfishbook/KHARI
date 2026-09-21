@@ -513,7 +513,7 @@ function renderPlaylists() {
           ${p.links
             .map((l) =>
               l.url
-                ? `<a class="btn btn-line" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.platform}에서 듣기${ARROW_SVG}<span class="sr-only">(새 창에서 열림)</span></a>`
+                ? `<a class="btn btn-line" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label || "오디오 기록 청취하기"}${ARROW_SVG}<span class="sr-only">(새 창에서 열림)</span></a>`
                 : `<button class="btn btn-line" type="button" disabled>${l.platform} 링크 준비 중</button>`
             )
             .join("")}
@@ -522,7 +522,7 @@ function renderPlaylists() {
   ).join("");
 }
 
-/* ---------- (대외비) 지침서 이미지 ---------- */
+/* ---------- 지침서 (※일부 공개) 이미지 ---------- */
 const guide = { index: 0, list: [], loaded: false };
 const guideImages = () => guide.list;
 const guideEntries = () => GUIDE_IMAGES.filter((g) => g && g.src);
@@ -546,6 +546,9 @@ async function loadGuideList() {
   guide.loaded = true;
 }
 
+// 넓은 화면에서는 두 장씩, 좁은 화면(휴대폰)에서는 한 장씩 보여 줍니다
+const guideStep = () => (window.matchMedia("(min-width: 641px)").matches ? 2 : 1);
+
 function renderGuide(animate = false) {
   const frame = $("#guide-frame");
   const controls = $("#guide-controls");
@@ -566,23 +569,28 @@ function renderGuide(animate = false) {
     return;
   }
 
+  const step = guideStep();
   guide.index = Math.min(Math.max(0, guide.index), images.length - 1);
-  const img = images[guide.index];
-  const alt = img.alt || `(대외비) 지침서 ${guide.index + 1}쪽`;
+  guide.index -= guide.index % step; // 두 장씩 볼 때는 항상 홀수 쪽부터 시작
+  const shown = images.slice(guide.index, guide.index + step);
 
   frame.innerHTML = `
-    <figure class="guide-figure">
-      <a class="guide-link" href="${img.src}" target="_blank" rel="noopener">
-        <img class="guide-img" src="${img.src}" alt="${alt}">
-      </a>
-      <figcaption class="guide-caption">
-        <a href="${img.src}" target="_blank" rel="noopener">원본 크기로 보기<span class="sr-only">(새 창에서 열림)</span></a>
-      </figcaption>
-    </figure>`;
-
-  $(".guide-img", frame).addEventListener("error", () => {
-    frame.innerHTML = `<p class="guide-empty">이미지를 불러오지 못했습니다.<br><b>${img.src}</b> 파일이 index.html과 같은 위치에 있는지, 파일 이름의 대소문자와 확장자가 정확한지 확인해 주세요.</p>`;
-  });
+    <div class="guide-spread" style="--guide-cols:${step}">
+      ${shown
+        .map((img, i) => {
+          const alt = img.alt || `지침서 ${guide.index + i + 1}쪽`;
+          return `
+          <figure class="guide-figure">
+            <a class="guide-link" href="${img.src}" target="_blank" rel="noopener">
+              <img class="guide-img" src="${img.src}" alt="${alt}">
+            </a>
+            <figcaption class="guide-caption">
+              <a href="${img.src}" target="_blank" rel="noopener">원본 크기로 보기<span class="sr-only">(${alt}, 새 창에서 열림)</span></a>
+            </figcaption>
+          </figure>`;
+        })
+        .join("")}
+    </div>`;
 
   if (animate) {
     frame.classList.remove("is-turning");
@@ -590,18 +598,20 @@ function renderGuide(animate = false) {
     frame.classList.add("is-turning");
   }
 
-  controls.hidden = images.length < 2;
-  $("#page-count").textContent = `${guide.index + 1} / ${images.length}쪽`;
+  const first = guide.index + 1;
+  const last = guide.index + shown.length;
+  controls.hidden = images.length <= step;
+  $("#page-count").textContent = first === last ? `${first} / ${images.length}쪽` : `${first}–${last} / ${images.length}쪽`;
   $("#page-prev").disabled = guide.index === 0;
-  $("#page-next").disabled = guide.index === images.length - 1;
+  $("#page-next").disabled = guide.index + step >= images.length;
 
-  // 다음 쪽 이미지를 미리 불러와 넘길 때 깜빡임을 줄입니다
-  const next = images[guide.index + 1];
-  if (next) new Image().src = next.src;
+  // 다음 장 이미지를 미리 불러와 넘길 때 깜빡임을 줄입니다
+  images.slice(guide.index + step, guide.index + step * 2).forEach((g) => (new Image().src = g.src));
 }
 
 function turnGuide(dir) {
-  const next = guide.index + dir;
+  const step = guideStep();
+  const next = guide.index + dir * step;
   if (next < 0 || next >= guideImages().length) return;
   guide.index = next;
   renderGuide(true);
@@ -620,14 +630,49 @@ function initGuide() {
     ).observe($("#guide-frame"));
   }
   document.addEventListener("keydown", (e) => {
-    if (!visible || guideImages().length < 2) return;
+    if (!visible || guideImages().length <= guideStep() || $("#warn-dialog")?.open) return;
     if (document.activeElement.closest?.(".roster-tabs")) return;
     if (e.key === "ArrowRight") turnGuide(1);
     if (e.key === "ArrowLeft") turnGuide(-1);
   });
 
+  // 화면 폭이 바뀌어 한 번에 보이는 장수가 달라지면 다시 그립니다
+  let lastStep = guideStep();
+  window.addEventListener("resize", () => {
+    if (guideStep() !== lastStep) {
+      lastStep = guideStep();
+      renderGuide();
+    }
+  });
+
   renderGuide();
   loadGuideList().then(() => renderGuide());
+}
+
+/* ---------- 지침서 열람 전 경고문 ---------- */
+function initWarning() {
+  const opener = $("#guide-open");
+  const dialog = $("#warn-dialog");
+  if (!opener || !dialog || typeof dialog.showModal !== "function") return; // 지원하지 않으면 바로 이동
+
+  const goToGuide = () => {
+    if (location.hash === "#preview") $("#preview").scrollIntoView();
+    else location.hash = "preview";
+  };
+
+  opener.addEventListener("click", (e) => {
+    e.preventDefault();
+    dialog.showModal();
+  });
+  $("#warn-confirm").addEventListener("click", () => {
+    dialog.close();
+    goToGuide();
+  });
+  $("#warn-cancel").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", () => opener.blur());
 }
 
 /* ---------- 시작 ---------- */
@@ -643,4 +688,5 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTest();
   renderPlaylists();
   initGuide();
+  initWarning();
 });

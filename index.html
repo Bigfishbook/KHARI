@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -34,7 +34,7 @@
         <a href="#researchers">탐사원 프로필</a>
         <a href="#test">탐사원 적성 평가</a>
         <a href="#playlist">오디오 아카이브실</a>
-        <a href="#preview">(대외비) 지침서</a>
+        <a href="#preview">지침서 (※일부 공개)</a>
       </nav>
     </div>
   </header>
@@ -54,7 +54,7 @@
         </p>
         <div class="hero-actions">
           <a class="btn btn-red" href="#book">기록 열람하기</a>
-          <a class="btn btn-line" href="#preview">지침서 정독하기</a>
+          <a class="btn btn-line" href="#preview" id="guide-open">지침서 일부 열람하기</a>
         </div>
       </div>
     </section>
@@ -163,13 +163,13 @@
       </div>
     </section>
 
-    <!-- (대외비) 지침서 (이미지) -->
+    <!-- 지침서 (※일부 공개) (이미지) -->
     <section class="section" id="preview" aria-labelledby="preview-title">
       <div class="wrap">
         <div class="section-head">
           <h2 class="section-title" id="preview-title">
             <span class="title-icon" data-icon-slot="preview"></span>
-            (대외비) 지침서
+            지침서 (※일부 공개)
           </h2>
           <p class="section-note">생존을 위해 끝까지 정독하세요. 이미지를 누르면 원본 크기로 볼 수 있습니다.</p>
         </div>
@@ -195,8 +195,23 @@
     </div>
   </footer>
 
+  <!-- 지침서 열람 전 경고문 -->
+  <dialog class="warn-dialog" id="warn-dialog" aria-labelledby="warn-title" aria-describedby="warn-text">
+    <div class="warn-box">
+      <p class="warn-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 10v5M12 17.3v.6" stroke="currentColor" stroke-width="2"/></svg>
+        <span id="warn-title">경고</span>
+      </p>
+      <p class="warn-text" id="warn-text">본 지침서는 국가 기밀 연구기관 '한국사 이상현상 연구원'의 공문서입니다. 해당 문서 내용을 무단으로 유출 시 그에 따른 처벌을 받을 수 있습니다.</p>
+      <div class="warn-actions">
+        <button class="warn-btn warn-confirm" type="button" id="warn-confirm">확인하고 열람하기</button>
+        <button class="warn-btn warn-cancel" type="button" id="warn-cancel">돌아가기</button>
+      </div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=12"></script>
 </body>
 </html>

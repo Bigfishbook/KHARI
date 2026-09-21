@@ -506,12 +506,13 @@ main:not(:has(.section:target)) .directory .wrap::after {
 .playlist-links svg { width: 16px; height: 16px; }
 
 /* ---------- 본문 열람 ---------- */
-.guide { max-width: 820px; margin-inline: auto; }
+.guide { max-width: 1120px; margin-inline: auto; }
 .guide-frame {
   background: var(--paper);
   padding: clamp(10px, 1.6vw, 16px);
   box-shadow: 0 0 0 1px var(--line), 12px 12px 0 var(--red);
 }
+.guide-spread { display: grid; grid-template-columns: repeat(var(--guide-cols, 2), minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 16px); }
 .guide-figure { margin: 0; }
 .guide-link { display: block; cursor: zoom-in; }
 .guide-img { width: 100%; height: auto; background: #e4e4e2; }
@@ -535,6 +536,43 @@ main:has(.section:target) + .site-footer { border-top: 1px solid var(--line); }
 .footer-brand { color: var(--white); font-weight: 700; }
 .footer-address { margin-top: 4px; color: var(--muted); font-size: 13px; font-style: normal; }
 .footer-note { color: var(--muted); font-size: 14px; max-width: 40em; }
+
+/* ---------- 지침서 경고문 ---------- */
+.warn-dialog {
+  width: min(100% - 32px, 520px);
+  padding: 0; border: 0;
+  background: transparent; color: var(--white);
+}
+.warn-dialog::backdrop { background: rgba(0, 0, 0, .8); }
+.warn-dialog[open] { animation: warn-in .25s ease both; }
+@keyframes warn-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.warn-box {
+  background: var(--red);
+  border: 2px solid var(--white);
+  outline: 6px solid var(--red);
+  padding: clamp(24px, 4vw, 36px);
+}
+.warn-label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 22px; font-weight: 700; letter-spacing: .08em;
+  padding-bottom: 14px; margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, .6);
+}
+.warn-label svg { width: 26px; height: 26px; }
+.warn-text { font-size: 17px; line-height: 1.8; }
+.warn-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.warn-btn {
+  flex: 1 1 160px;
+  min-height: 48px; padding: 0 18px;
+  font-weight: 700; cursor: pointer;
+  border: 2px solid var(--white);
+}
+.warn-confirm { background: var(--white); color: var(--red); }
+.warn-confirm:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+.warn-cancel { background: transparent; color: var(--white); }
+.warn-cancel:hover { background: rgba(0, 0, 0, .2); }
+.warn-dialog :focus-visible { outline: 2px solid var(--black); outline-offset: 3px; }
 
 /* ---------- 알림 ---------- */
 .toast {
