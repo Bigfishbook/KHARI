@@ -87,13 +87,6 @@ p { margin: 0; }
 .btn[disabled] { opacity: .35; cursor: not-allowed; }
 .btn-line[disabled]:hover { border-color: var(--line-strong); }
 
-.text-btn {
-  margin-top: 24px; padding: 6px 0;
-  background: none; border: 0; border-bottom: 1px solid var(--line-strong);
-  color: var(--muted); font-size: 14px; cursor: pointer;
-}
-.text-btn:hover { color: var(--white); border-color: var(--white); }
-
 /* ---------- 헤더: 로고만 남기고 우측 메뉴는 숨김 ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 50;
@@ -104,7 +97,11 @@ p { margin: 0; }
 .header-inner { display: flex; align-items: center; height: var(--header-h); }
 
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.seal { width: 28px; height: 28px; color: var(--red); }
+.seal { display: flex; align-items: center; height: 32px; color: var(--red); }
+.seal svg { width: 28px; height: 28px; }
+/* 로고 이미지가 있으면 기본 그림은 숨깁니다 */
+.seal-img { height: 32px; width: auto; max-width: 180px; object-fit: contain; }
+.seal:has(.seal-img) svg { display: none; }
 .brand-text { font-weight: 700; color: var(--white); letter-spacing: -.01em; }
 
 /* 메뉴 역할은 아래 파일 아이콘이 대신합니다 */
@@ -180,7 +177,7 @@ p { margin: 0; }
 .menu-item {
   position: relative;
   display: flex; flex-direction: column;
-  min-height: 250px;
+  min-height: 220px;
   padding: 24px 18px 18px;
   background: var(--black);
   border: 1px solid var(--line-strong);
@@ -238,16 +235,6 @@ p { margin: 0; }
   transition: color .25s, background-color .25s;
 }
 
-.icon-change {
-  position: relative; z-index: 2;
-  align-self: stretch;
-  margin-top: 18px;
-  min-height: 36px; padding: 0 10px;
-  border: 1px solid var(--line); background: var(--black);
-  color: var(--muted); font-size: 13px; cursor: pointer;
-}
-.icon-change:hover { color: var(--white); border-color: var(--white); }
-
 /* 마우스를 올리면 */
 .menu-item:hover,
 .menu-item:focus-within { border-color: var(--white); }
@@ -298,16 +285,6 @@ main:has(#preview:target) .menu-item:has(a[href="#preview"]) .menu-icon {
   color: var(--white);
   border-color: var(--white);
 }
-main:has(#book:target) .menu-item:has(a[href="#book"]) .icon-change,
-main:has(#researchers:target) .menu-item:has(a[href="#researchers"]) .icon-change,
-main:has(#test:target) .menu-item:has(a[href="#test"]) .icon-change,
-main:has(#playlist:target) .menu-item:has(a[href="#playlist"]) .icon-change,
-main:has(#preview:target) .menu-item:has(a[href="#preview"]) .icon-change {
-  background: transparent;
-  color: var(--white);
-  border-color: rgba(255, 255, 255, .55);
-}
-
 /* 아무 파일도 열리지 않았을 때 안내 */
 main:not(:has(.section:target)) .directory .wrap::after {
   content: "파일을 선택하면 공개 승인된 기록이 이 아래에 열립니다.";
@@ -515,33 +492,6 @@ main:has(.section:target) + .site-footer { border-top: 1px solid var(--line); }
 .footer-brand { color: var(--white); font-weight: 700; }
 .footer-note { color: var(--muted); font-size: 14px; max-width: 40em; }
 
-/* ---------- 아이콘 선택 창 ---------- */
-.icon-dialog {
-  width: min(100% - 32px, 520px);
-  padding: 0; border: 1px solid var(--line-strong); border-top: 3px solid var(--red);
-  background: var(--black); color: var(--text);
-}
-.icon-dialog::backdrop { background: rgba(0, 0, 0, .78); }
-.icon-dialog-inner { padding: 24px; }
-.dialog-head { display: flex; align-items: center; justify-content: space-between; }
-.dialog-head h2 { font-size: 22px; }
-.close-btn { width: 40px; height: 40px; display: grid; place-items: center; background: none; border: 0; cursor: pointer; color: var(--muted); }
-.close-btn:hover { color: var(--white); }
-.close-btn svg { width: 22px; height: 22px; }
-.dialog-target { color: var(--muted); font-size: 15px; margin-top: 4px; }
-.dialog-target b { color: var(--white); font-weight: 500; }
-
-.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 20px; }
-.icon-option {
-  aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  background: none; border: 1px solid var(--line); cursor: pointer; color: var(--white); padding: 6px;
-}
-.icon-option svg { width: 28px; height: 28px; }
-.icon-option span { font-size: 11px; color: var(--muted); line-height: 1.2; }
-.icon-option:hover { border-color: var(--white); }
-.icon-option[aria-selected="true"] { border-color: var(--red); background: var(--red); }
-.icon-option[aria-selected="true"] span { color: var(--white); }
-
 /* ---------- 알림 ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 28px; z-index: 200;
@@ -587,7 +537,7 @@ main:has(.section:target) + .site-footer { border-top: 1px solid var(--line); }
 
   .menu-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 12px; }
   .menu-item:last-child { grid-column: 1 / -1; }
-  .menu-item { min-height: 210px; padding: 18px 14px 14px; }
+  .menu-item { min-height: 180px; padding: 18px 14px 14px; }
   .menu-item::after { top: 12px; right: 10px; font-size: 11px; padding: 0 6px; }
   .menu-icon { width: 52px; height: 52px; }
   .menu-icon svg { width: 26px; height: 26px; }
