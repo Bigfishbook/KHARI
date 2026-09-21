@@ -74,7 +74,7 @@ const MENU = [
   { id: "researchers", name: "탐사원 프로필", desc: "주요 탐사원들의 프로필을 열람합니다.", href: "#researchers", icon: "idcard" },
   { id: "test", name: "탐사원 적성 평가", desc: "입사를 희망하시는 분은 먼저 평가를 진행해 주세요.", href: "#test", icon: "checklist" },
   { id: "playlist", name: "오디오 아카이브실", desc: "탐사 시 청취를 권장합니다.", href: "#playlist", icon: "headphones" },
-  { id: "preview", name: "(일부 공개) 지침서", desc: "생존을 위해 지침서 정독을 권장합니다.", href: "#preview", icon: "document" },
+  { id: "preview", name: "(대외비) 지침서", desc: "생존을 위해 지침서 정독을 권장합니다.", href: "#preview", icon: "document" },
 ];
 
 /* ---------------------------------------------------------
@@ -220,7 +220,7 @@ const PLAYLISTS = [
   {
     time: "탐사 전 필수 청취",
     name: "오디오 아카이브",
-    desc: "(이어폰 착용 권장) 탐사원들이 탐사 시 유용하게 사용한 오디오 플레이리스트입니다.",
+    desc: "탐사원들이 탐사 시 유용하게 사용한 오디오 플레이리스트입니다",
     links: [
       { platform: "YouTube Music", url: "https://youtube.com/playlist?list=PLP4PFc0hKG-4&si=g7LLlKf3wD5hP83O" },
 
@@ -230,13 +230,16 @@ const PLAYLISTS = [
 
 /* ---------------------------------------------------------
    6. 설정: (대외비) 지침서 이미지
-      jpg 파일을 index.html과 같은 위치에 올리고 파일 이름을 적어 주세요.
-      파일 이름은 대소문자와 확장자까지 똑같아야 합니다. (guide.jpg ≠ Guide.JPG)
-      여러 장이면 한 줄씩 추가하면 되고, 2장 이상일 때 '이전 쪽/다음 쪽' 버튼이 나타납니다.
-      예: { src: "guide-2.jpg", alt: "(대외비) 지침서 2쪽" },
+      jpg 파일을 index.html과 같은 위치에 올리고, 보여 줄 순서대로 파일 이름을 적어 주세요.
+      파일 이름은 대소문자와 확장자까지 똑같아야 합니다. (guide-2.jpg ≠ Guide-2.JPG)
+      장수를 늘리려면 한 줄을 복사해 붙여 넣고 파일 이름만 바꾸세요.
+      아직 올리지 않은 파일은 자동으로 건너뛰므로, 미리 적어 두어도 괜찮습니다.
+      2장 이상이 표시되면 '이전 쪽/다음 쪽' 버튼이 나타납니다.
    --------------------------------------------------------- */
 const GUIDE_IMAGES = [
-  { src: "guide.jpg", alt: "(대외비) 지침서" },
+  { src: "guide.jpg" },
+  { src: "guide-2.jpg" },
+  { src: "guide-3.jpg" },
 ];
 
 /* ---------------------------------------------------------
@@ -517,16 +520,45 @@ function renderPlaylists() {
 }
 
 /* ---------- (대외비) 지침서 이미지 ---------- */
-const guide = { index: 0 };
-const guideImages = () => GUIDE_IMAGES.filter((g) => g && g.src);
+const guide = { index: 0, list: [], loaded: false };
+const guideImages = () => guide.list;
+const guideEntries = () => GUIDE_IMAGES.filter((g) => g && g.src);
+
+// 설정에 적힌 이미지 중 실제로 불러올 수 있는 것만 순서대로 남깁니다
+function checkImage(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+async function loadGuideList() {
+  const entries = guideEntries();
+  const ok = await Promise.all(entries.map((g) => checkImage(g.src)));
+  entries.forEach((g, i) => {
+    if (!ok[i]) console.warn(`지침서 이미지를 찾지 못해 건너뜁니다: ${g.src}`);
+  });
+  guide.list = entries.filter((_, i) => ok[i]);
+  guide.loaded = true;
+}
 
 function renderGuide(animate = false) {
   const frame = $("#guide-frame");
   const controls = $("#guide-controls");
   const images = guideImages();
 
+  if (!guide.loaded) {
+    frame.innerHTML = `<p class="guide-empty">지침서를 불러오는 중입니다.</p>`;
+    controls.hidden = true;
+    return;
+  }
+
   if (images.length === 0) {
-    frame.innerHTML = `<p class="guide-empty">지침서 이미지가 아직 등록되지 않았습니다.<br>script.js의 GUIDE_IMAGES에 이미지 파일 이름을 적어 주세요.</p>`;
+    const names = guideEntries().map((g) => g.src).join(", ");
+    frame.innerHTML = names
+      ? `<p class="guide-empty">지침서 이미지를 불러오지 못했습니다.<br><b>${names}</b> 파일이 index.html과 같은 위치에 있는지, 파일 이름의 대소문자와 확장자가 정확한지 확인해 주세요.</p>`
+      : `<p class="guide-empty">지침서 이미지가 아직 등록되지 않았습니다.<br>script.js의 GUIDE_IMAGES에 이미지 파일 이름을 적어 주세요.</p>`;
     controls.hidden = true;
     return;
   }
@@ -592,6 +624,7 @@ function initGuide() {
   });
 
   renderGuide();
+  loadGuideList().then(() => renderGuide());
 }
 
 /* ---------- 시작 ---------- */

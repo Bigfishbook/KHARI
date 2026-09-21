@@ -533,6 +533,7 @@ main:not(:has(.section:target)) .directory .wrap::after {
 main:has(.section:target) + .site-footer { border-top: 1px solid var(--line); }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 40px; }
 .footer-brand { color: var(--white); font-weight: 700; }
+.footer-address { margin-top: 4px; color: var(--muted); font-size: 13px; font-style: normal; }
 .footer-note { color: var(--muted); font-size: 14px; max-width: 40em; }
 
 /* ---------- 알림 ---------- */
