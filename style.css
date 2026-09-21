@@ -176,6 +176,34 @@ p { margin: 0; }
 .history-body p { color: var(--text); font-size: 16px; line-height: 1.9; }
 .history-body p + p { margin-top: 1em; }
 
+/* ---------- 조직도 (첫 화면에 항상 표시) ---------- */
+.org { padding: 8px 0 clamp(44px, 5vw, 64px); }
+.org .wrap { padding-top: 28px; border-top: 1px solid var(--line); }
+.org .section-head { margin-bottom: 28px; }
+.org .section-head h2 { font-size: clamp(20px, 2.2vw, 24px); }
+
+.org-chart { border: 1px solid var(--line-strong); }
+.org-top {
+  padding: 14px 20px;
+  background: var(--white); color: var(--black);
+  font-weight: 700; text-align: center; letter-spacing: -.01em;
+}
+.org-depts { display: grid; grid-template-columns: repeat(var(--org-cols, 3), minmax(0, 1fr)); }
+.org-dept { display: flex; flex-direction: column; border-left: 1px solid var(--line-strong); }
+.org-dept:first-child { border-left: 0; }
+.org-name {
+  padding: 14px 20px;
+  border-top: 3px solid var(--red);
+  border-bottom: 1px solid var(--line-strong);
+  font-size: 18px; letter-spacing: -.02em; text-align: center;
+}
+.org-desc { padding: 18px 20px; color: var(--text); font-size: 15px; line-height: 1.8; }
+.org-teams { list-style: none; margin: auto 0 0; padding: 0; border-top: 1px solid var(--line-strong); }
+.org-teams li { padding: 14px 20px; }
+.org-teams li + li { border-top: 1px dashed var(--line-strong); }
+.org-team-name { display: block; color: var(--red); font-size: 15px; font-weight: 700; }
+.org-team-desc { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
 /* ---------- 파일 보관함 (메인 아이콘) ---------- */
 .directory { padding: 8px 0 clamp(56px, 7vw, 88px); border-bottom: 1px solid var(--line); }
 .directory .section-head { margin-bottom: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
@@ -549,6 +577,12 @@ main:has(.section:target) + .site-footer { border-top: 1px solid var(--line); }
   :root { --tab-h: 30px; }
 
   .history .wrap { grid-template-columns: 1fr; }
+
+  /* 모바일에서는 부서를 위아래로 */
+  .org-depts { grid-template-columns: 1fr; }
+  .org-dept { border-left: 0; }
+  .org-dept + .org-dept { border-top: 1px solid var(--line-strong); }
+  .org-name { text-align: left; }
 
   .hero-actions .btn { flex: 1; padding: 0 12px; }
 

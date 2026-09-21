@@ -37,6 +37,35 @@ const HISTORY = [
 ];
 
 /* ---------------------------------------------------------
+   1-2. 설정: 조직도 (첫 화면에 항상 표시)
+      top은 맨 위 칸에 들어갈 기관 이름입니다.
+      부서마다 name(부서 이름), desc(설명)를 적고,
+      하위 팀이 있으면 teams에 { name: "팀 이름", desc: "설명" } 형식으로 넣어 주세요.
+      하위 팀이 없으면 teams 줄은 지워도 됩니다.
+   --------------------------------------------------------- */
+const ORG = {
+  top: "한국사 이상현상 연구원",
+  departments: [
+    {
+      name: "탐사본부",
+      desc: "이상 현장에 직접 투입되어 정보 수집과 지침서 작성, 실종자 구출을 담당합니다.",
+    },
+    {
+      name: "관리본부",
+      desc: "이상 현장으로 진입 가능한 지역 일대를 순찰·관리합니다. 주로 탐사원들의 이상 현장 진입을 돕고, 귀환 시 필요에 따라 의료 기관으로의 즉각적인 이송 및 실종자 신변 인계를 담당합니다.",
+    },
+    {
+      name: "연구본부",
+      desc: "이상현상에서 수집한 정보들을 연구합니다.",
+      teams: [
+        { name: "사료연구팀", desc: "실제 역사적 사실 중 이상현상과 관련 있는 부분을 연구합니다." },
+        { name: "현상연구팀", desc: "이상현상 자체를 연구하며, 탐사 도중 특이 사항을 분석합니다." },
+      ],
+    },
+  ],
+};
+
+/* ---------------------------------------------------------
    2. 설정: 메인 메뉴 항목과 아이콘
       icon 값을 아래 7번 아이콘 모음의 이름(book, eye, key 등)으로 바꾸면 아이콘이 바뀝니다.
    --------------------------------------------------------- */
@@ -316,6 +345,29 @@ function renderHistory() {
   $("#history-body").innerHTML = HISTORY.map((text) => `<p>${text}</p>`).join("");
 }
 
+/* ---------- 조직도 ---------- */
+function renderOrg() {
+  const depts = ORG.departments
+    .map(
+      (d) => `
+      <article class="org-dept">
+        <h3 class="org-name">${d.name}</h3>
+        <p class="org-desc">${d.desc}</p>
+        ${
+          d.teams && d.teams.length
+            ? `<ul class="org-teams">${d.teams
+                .map((t) => `<li><span class="org-team-name">${t.name}</span><span class="org-team-desc">${t.desc}</span></li>`)
+                .join("")}</ul>`
+            : ""
+        }
+      </article>`
+    )
+    .join("");
+  $("#org-chart").innerHTML = `
+    <div class="org-top">${ORG.top}</div>
+    <div class="org-depts" style="--org-cols:${ORG.departments.length}">${depts}</div>`;
+}
+
 /* ---------- 도서 ---------- */
 function renderBook() {
   $("#cover-title").textContent = BOOK.title;
@@ -546,6 +598,7 @@ function initGuide() {
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   renderHistory();
+  renderOrg();
   renderMenu();
   applyIcons();
   bindRedactions();

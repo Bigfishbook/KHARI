@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -66,6 +66,18 @@
           <h2 id="history-title">연구원 연혁</h2>
         </div>
         <div class="history-body" id="history-body">
+          <!-- script.js에서 생성 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 조직도 (항상 보임) -->
+    <section class="org" aria-labelledby="org-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="org-title">조직도</h2>
+        </div>
+        <div class="org-chart" id="org-chart">
           <!-- script.js에서 생성 -->
         </div>
       </div>
@@ -182,6 +194,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
